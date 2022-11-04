@@ -1,0 +1,35 @@
+### API Home
+POST http://localhost:8000/api/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "My Product",
+    "content": "Hello world"
+}
+
+### Get list of products
+http://localhost:8000/api/products/ HTTP/1.1
+
+### Get a product
+http://localhost:8000/api/products/4 HTTP/1.1
+
+### Create a product
+POST http://localhost:8000/api/products/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "New Product",
+    "price": 25.00
+}
+
+### Update a product
+PUT http://localhost:8000/api/products/5/update HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "Hello world my old friend",
+    "price": 99.99
+}
+
+### Delete a product
+DELETE http://localhost:8000/api/products/5/delete HTTP/1.1
