@@ -2,7 +2,7 @@ from products.serializers import ProductSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import generics
+from rest_framework import generics, mixins
 from products.models import Product
 
 
@@ -48,6 +48,43 @@ class ProductDestroyAPIView(generics.DestroyAPIView):
 #     '''
 #     queryset = Product.objects.all()
 #     serializer_class = ProductSerializer
+
+class ProductMixinView(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.UpdateModelMixin,
+    generics.GenericAPIView
+    ):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        if pk is not None:
+            return self.retrieve(self, *args, **kwargs)
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        # serializer.save(user=self.request.user)
+        title = serializer.validated_data.get('title')
+        content = serializer.validated_data.get('content') or None
+        if content is None:
+            content = title
+        return serializer.save(content=content)
+
+
 
 # function based view
 @api_view(['GET', 'POST'])
